@@ -1,8 +1,8 @@
-import ServicesHero from "@/components/Service/seviceshero";
+import ServicesHero from "@/components/Service/ServicesHero";
 import ContentsServices from "@/components/Service/servicescontents";
 import ServicesAds from "@/components/Service/servicesads";
-import { SERVICE_CATEGORIES } from "@/components/Service/services.data";
-import type { ServiceCategoryId } from "@/components/Service/service.types";
+import { getServiceCategories } from "@/lib/api/services";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
 
@@ -16,30 +16,28 @@ export const metadata: Metadata = buildPageMetadata({
 interface Props {
   searchParams: Promise<{ category?: string }>;
 }
+
 export default async function ServicesPage({ searchParams }: Props) {
-  const params = await searchParams;
-  const categoryFromUrl = params?.category;
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  const categories = await getServiceCategories();
 
-  const isValidCategory =
-    typeof categoryFromUrl === "string" &&
-    SERVICE_CATEGORIES.some((c) => c.id === categoryFromUrl);
+  const { category } = await searchParams;
 
-  const activeCategory: ServiceCategoryId = isValidCategory
-    ? (categoryFromUrl as ServiceCategoryId)
-    : "services";
+  const activeCategory = categories.find((c) => c.id === category);
 
-  const active = SERVICE_CATEGORIES.find((c) => c.id === activeCategory);
+  if (category && !activeCategory) {
+    notFound();
+  }
+
+  const finalCategory = activeCategory ?? categories[0];
 
   return (
-    <div>
-      <ServicesHero
-        categories={SERVICE_CATEGORIES}
-        activeCategory={activeCategory}
-      />
+    <>
+      <ServicesHero categories={categories} activeCategory={finalCategory.id} />
 
-      <ContentsServices subCategories={active?.subCategories ?? []} />
+      <ContentsServices subCategories={finalCategory.subCategories} />
 
       <ServicesAds />
-    </div>
+    </>
   );
 }
