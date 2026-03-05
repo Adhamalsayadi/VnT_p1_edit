@@ -38,7 +38,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className="bg-white p-[40px_60px] rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] absolute left-[220px] top-[140px] w-[700px] z-[5]">
+        <div className="bg-white p-[40px_60px] rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] absolute left-[220px] top-[140px] w-[1012px] z-[5]">
           <p className="text-primary font-semibold mb-[30px] text-sm uppercase">
             log in
           </p>
@@ -49,7 +49,7 @@ export default function LoginPage() {
             <input
               type="email"
               placeholder=""
-              className="w-full p-[15px_20px] bg-[#ebeef5] border-none rounded-lg text-base outline-none"
+              className="w-[50%] p-[15px_20px] bg-[#ebeef5] border-none rounded-lg text-base outline-none"
             />
           </div>
           <div className="mb-[25px]">
@@ -59,7 +59,7 @@ export default function LoginPage() {
             <input
               type="password"
               placeholder=""
-              className="w-full p-[15px_20px] bg-[#ebeef5] border-none rounded-lg text-base outline-none"
+              className="w-[50%] p-[15px_20px] bg-[#ebeef5] border-none rounded-lg text-base outline-none"
             />
           </div>
           <div className="flex justify-end mt-10">

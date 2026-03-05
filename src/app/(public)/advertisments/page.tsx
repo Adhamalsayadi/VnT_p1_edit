@@ -1,26 +1,29 @@
 import EnquiriesHero from "@/components/enquiries/components/enquirieshero";
 import SearchBar from "@/components/enquiries/components/searchbar";
 import Services from "@/components/enquiries/components/services";
-import ContentsServices from "@/components/Service/servicescontents";
 import Mainlayout from "@/components/enquiries/components/mainlayout";
-import enquiriesData from "@/data/enquiries.json";
-import { EnquiryFilters } from "@/types/enquiries";
+import Pagination from "@/components/enquiries/components/Pagination";
 import EmptyState from "@/components/ui/empty-state";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
+import { fetchEnquiries } from "@/lib/api/enquiries";
+import { EnquiryFilters } from "@/types/enquiries";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Advertisments | V&T Platform",
+  title: "Enquiries | V&T Platform",
   description:
-    "Discover published advertisments and opportunities across services, rentals, manpower, and products.",
-  path: "/advertisments",
+    "Browse the latest procurement and service enquiries, filter by category, rating, and timeframe.",
+  path: "/enquiries",
 });
+
 interface Props {
-  searchParams: Promise<EnquiryFilters>;
+  searchParams: Promise<EnquiryFilters & { page?: string }>;
 }
 
-export default async function AdvertismentsPage({ searchParams }: Props) {
+export default async function EnquiriesPage({ searchParams }: Props) {
   const params = await searchParams;
+  const page = Number(params.page) || 1;
+  const pageSize = 10;
 
   const {
     search = "",
@@ -31,30 +34,29 @@ export default async function AdvertismentsPage({ searchParams }: Props) {
     vtRate = "",
   } = params;
 
-  const filtered = enquiriesData.filter((item) => {
-    return (
-      (search === "" ||
-        item.title.toLowerCase().includes(search.toLowerCase()) ||
-        item.category.toLowerCase().includes(search.toLowerCase()) ||
-        item.subCategory.toLowerCase().includes(search.toLowerCase())) &&
-      (category === "" || item.category === category) &&
-      (subCategory === "" || item.subCategory === subCategory) &&
-      (time === "" || item.time === time) &&
-      (clientRate === "" || item.clientRate >= Number(clientRate)) &&
-      (vtRate === "" || item.vtRate >= Number(vtRate))
-    );
+  const { data: enquiries, total } = await fetchEnquiries({
+    search,
+    category,
+    subCategory,
+    time,
+    clientRate,
+    vtRate,
+    page,
+    pageSize,
   });
 
-  if (filtered.length === 0) {
+  const totalPages = Math.ceil(total / pageSize);
+
+  if (enquiries.length === 0) {
     return (
       <div>
         <EnquiriesHero />
         <SearchBar />
         <Services />
         <EmptyState
-          title="No advertisments found"
-          description="No results match your current filters. Clear filters and try again."
-          actionHref="/advertisments"
+          title="No enquiries match these filters"
+          description="Try broadening your search or clear filters to see all enquiries."
+          actionHref="/enquiries"
           actionLabel="Clear Filters"
         />
       </div>
@@ -66,8 +68,8 @@ export default async function AdvertismentsPage({ searchParams }: Props) {
       <EnquiriesHero />
       <SearchBar />
       <Services />
-      <ContentsServices />
-      <Mainlayout enquiries={filtered} />
+      <Mainlayout enquiries={enquiries} />
+      <Pagination totalPages={totalPages} currentPage={page} />
     </div>
   );
 }

@@ -1,13 +1,15 @@
 import EnquiriesHero from "@/components/enquiries/components/enquirieshero";
 import SearchBar from "@/components/enquiries/components/searchbar";
-import Services from "@/components/enquiries/components/services";
+import ServiceGrid from "@/components/shared/Service";
 import Mainlayout from "@/components/enquiries/components/mainlayout";
-import enquiriesData from "@/data/enquiries.json";
-import { EnquiryFilters } from "@/types/enquiries";
 import Pagination from "@/components/enquiries/components/Pagination";
+import { getServiceCategories } from "@/lib/api/services";
 import EmptyState from "@/components/ui/empty-state";
 import type { Metadata } from "next";
+import ContentsServices from "@/components/Service/servicescontents";
 import { buildPageMetadata } from "@/lib/seo";
+import { fetchEnquiries } from "@/lib/api/enquiries";
+import { EnquiryFilters } from "@/types/enquiries";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Enquiries | V&T Platform",
@@ -22,6 +24,7 @@ interface Props {
 
 export default async function EnquiriesPage({ searchParams }: Props) {
   const params = await searchParams;
+
   const page = Number(params.page) || 1;
   const pageSize = 10;
 
@@ -34,47 +37,52 @@ export default async function EnquiriesPage({ searchParams }: Props) {
     vtRate = "",
   } = params;
 
-  const filtered = enquiriesData.filter((item) => {
-    return (
-      (search === "" ||
-        item.title.toLowerCase().includes(search.toLowerCase()) ||
-        item.category.toLowerCase().includes(search.toLowerCase()) ||
-        item.subCategory.toLowerCase().includes(search.toLowerCase())) &&
-      (category === "" || item.category === category) &&
-      (subCategory === "" || item.subCategory === subCategory) &&
-      (time === "" || item.time === time) &&
-      (clientRate === "" || item.clientRate >= Number(clientRate)) &&
-      (vtRate === "" || item.vtRate >= Number(vtRate))
-    );
+  const categories = await getServiceCategories();
+
+  const activeCategory = categories.find((c) => c.id === category);
+
+  const finalCategory = activeCategory ?? categories[0];
+
+  const { data: enquiries, total } = await fetchEnquiries({
+    search,
+    category: finalCategory.id,
+    subCategory,
+    time,
+    clientRate,
+    vtRate,
+    page,
+    pageSize,
   });
 
-  const totalPages = Math.ceil(filtered.length / pageSize);
-  const start = (page - 1) * pageSize;
-  const paginatedData = filtered.slice(start, start + pageSize);
+  const totalPages = Math.ceil(total / pageSize);
 
-  if (filtered.length === 0) {
-    return (
-      <div>
-        <EnquiriesHero />
-        <SearchBar />
-        <Services />
+  return (
+    <div>
+      <EnquiriesHero />
+
+      <SearchBar />
+
+      <ServiceGrid
+        items={categories}
+        variant="enquiries"
+        activeId={finalCategory.id}
+      />
+
+      <ContentsServices subCategories={finalCategory.subCategories} />
+
+      {enquiries.length === 0 ? (
         <EmptyState
           title="No enquiries match these filters"
           description="Try broadening your search or clear filters to see all enquiries."
           actionHref="/enquiries"
           actionLabel="Clear Filters"
         />
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <EnquiriesHero />
-      <SearchBar />
-      <Services />
-      <Mainlayout enquiries={paginatedData} />
-      <Pagination totalPages={totalPages} currentPage={page} />
+      ) : (
+        <>
+          <Mainlayout enquiries={enquiries} />
+          <Pagination totalPages={totalPages} currentPage={page} />
+        </>
+      )}
     </div>
   );
 }

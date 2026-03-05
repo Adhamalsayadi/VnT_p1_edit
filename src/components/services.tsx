@@ -19,10 +19,10 @@ export default function Services() {
             <button
               key={service.label}
               type="button"
-              className="flex items-center justify-center gap-[15px] border-none focus-visible:outline-2 focus-visible:outline-primary/80 focus-visible:outline-offset-2 rounded-md"
+              className="flex items-center justify-center gap-[15px] bg-[#EFEFEF]  w-[251.37px] h-[107px] mt-5 border-none focus-visible:outline-2 focus-visible:outline-primary/80 focus-visible:outline-offset-2 rounded-md"
             >
               <Image
-                src={service.image}
+                src={service.icon}
                 alt={service.label}
                 width={37}
                 height={37}

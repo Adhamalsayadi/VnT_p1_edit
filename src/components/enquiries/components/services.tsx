@@ -13,7 +13,7 @@ export default function Services() {
             className="flex items-center justify-center gap-[15px] bg-[#EFEFEF] w-[251.37px] h-[107px] p-3"
           >
             <Image
-              src={service.image}
+              src={service.icon}
               alt={service.label}
               width={38}
               height={37}

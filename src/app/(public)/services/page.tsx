@@ -18,7 +18,7 @@ interface Props {
 }
 
 export default async function ServicesPage({ searchParams }: Props) {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   const categories = await getServiceCategories();
 
   const { category } = await searchParams;

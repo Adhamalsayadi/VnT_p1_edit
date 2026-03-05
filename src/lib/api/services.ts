@@ -1,4 +1,4 @@
-import type { ServiceCategory } from "@/components/Service/service.types";
+import type { ServiceCategory } from "@/types/service.types";
 
 export async function getServiceCategories(): Promise<ServiceCategory[]> {
   await new Promise((resolve) => setTimeout(resolve, 2000));

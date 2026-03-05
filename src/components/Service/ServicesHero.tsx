@@ -1,6 +1,8 @@
-import Image from "next/image";
-import Link from "next/link";
-import type { ServiceCategory, ServiceCategoryId } from "./service.types";
+import ServiceGrid from "@/components/shared/Service";
+import type {
+  ServiceCategory,
+  ServiceCategoryId,
+} from "../../types/service.types";
 
 interface Props {
   categories: ServiceCategory[];
@@ -18,30 +20,11 @@ export default function ServicesHero({ categories, activeCategory }: Props) {
           Providing high quality in-order to be day-to-day updated
         </p>
 
-        <div className="flex flex-wrap gap-5">
-          {categories.map((service) => {
-            const isActive = activeCategory === service.id;
-            return (
-              <Link
-                key={service.id}
-                href={`/services?category=${service.id}`}
-                className={`flex items-center justify-center gap-[15px] w-full sm:w-[239px] h-[107px] rounded-[10px] transition-all duration-300 ${
-                  isActive
-                    ? "bg-primary shadow-sm"
-                    : "bg-white hover:shadow-md hover:-translate-y-0.5"
-                }`}
-              >
-                <Image
-                  src={service.icon}
-                  alt={service.label}
-                  width={37}
-                  height={37}
-                />
-                <div className="font-semibold text-dark">{service.label}</div>
-              </Link>
-            );
-          })}
-        </div>
+        <ServiceGrid
+          items={categories}
+          variant="hero"
+          activeId={activeCategory}
+        />
       </div>
     </div>
   );

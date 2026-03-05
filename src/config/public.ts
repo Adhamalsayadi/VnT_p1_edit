@@ -9,9 +9,17 @@ export type CountryOption = {
 };
 
 export type ServiceOption = {
+  id: string;
   label: string;
-  image: string;
+  icon: string;
 };
+
+export const HOME_SERVICE_OPTIONS: ServiceOption[] = [
+  { id: "services", label: "Services", icon: "/Services.png" },
+  { id: "rental", label: "Rental", icon: "/for-rent.png" },
+  { id: "products", label: "Products", icon: "/received.png" },
+  { id: "manpower", label: "Man power", icon: "/power.png" },
+];
 
 export type SelectFilterOption = {
   key: "category" | "subCategory" | "time" | "clientRate" | "vtRate";
@@ -31,13 +39,6 @@ export const NAV_LINKS: NavLink[] = [
 export const COUNTRY_OPTIONS: CountryOption[] = [
   { name: "Saudi Arabia", flag: "/Saudi_flag.png" },
   { name: "Bahrain", flag: "/bahrain_flag.png" },
-];
-
-export const HOME_SERVICE_OPTIONS: ServiceOption[] = [
-  { label: "Services", image: "/Services.png" },
-  { label: "Rental", image: "/for-rent.png" },
-  { label: "Products", image: "/received.png" },
-  { label: "Man power", image: "/power.png" },
 ];
 
 export const ENQUIRY_FILTERS: SelectFilterOption[] = [

@@ -1,15 +1,23 @@
 "use client";
-import { submitPriceAction } from "@/actions/submitPrice";
+import React, { useState } from "react";
 import Image from "next/image";
-import { Enquiry } from "@/types/enquiries";
+import { Enquiry, EnquiryM } from "@/types/enquiries";
 import Button from "@/components/ui/button";
 import SurfaceCard from "@/components/ui/surface-card";
+import EnquiryModal from "@/components/ui/EnquiryModal";
+import SellerRatingModal from "@/components/ui/SellerRatingModal";
+import SuccessModal from "@/components/ui/SuccessModal";
 
 interface Props {
   enquiries?: Enquiry[];
 }
 
 export default function EnquiriesCard({ enquiries = [] }: Props) {
+  const [selectedEnquiry, setSelectedEnquiry] = useState<Enquiry | null>(null);
+  const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
   if (enquiries.length === 0) {
     return (
       <p role="status" className="p-5 font-medium text-text-muted">
@@ -18,8 +26,20 @@ export default function EnquiriesCard({ enquiries = [] }: Props) {
     );
   }
 
+  const handleOpenEnquiry = (enquiry: Enquiry) => {
+    setSelectedEnquiry(enquiry);
+    setIsEnquiryModalOpen(true);
+  };
+
+  const handleCloseAll = () => {
+    setIsEnquiryModalOpen(false);
+    setIsRatingModalOpen(false);
+    setIsSuccessModalOpen(false);
+    setSelectedEnquiry(null);
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3  gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {enquiries.slice(0, 6).map((item) => (
         <SurfaceCard
           key={item.id}
@@ -45,13 +65,43 @@ export default function EnquiriesCard({ enquiries = [] }: Props) {
             className="rounded-full my-1.25 object-cover"
           />
 
-          <form action={submitPriceAction.bind(null, item.id)}>
-            <Button type="submit" className="w-[197px] mt-3 capitalize">
-              Submit your price
-            </Button>
-          </form>
+          <Button 
+            onClick={() => handleOpenEnquiry(item)}
+            className="w-[197px] mt-3 capitalize"
+          >
+            Submit your price
+          </Button>
         </SurfaceCard>
       ))}
+
+      {/* Modals */}
+      {isEnquiryModalOpen && selectedEnquiry && (
+        <EnquiryModal
+          enquiry={selectedEnquiry as EnquiryM}
+          onClose={() => setIsEnquiryModalOpen(false)}
+          onOpenRating={() => {
+            setIsEnquiryModalOpen(false);
+            setIsRatingModalOpen(true);
+          }}
+          onSubmitRfq={() => {
+            setIsEnquiryModalOpen(false);
+            setIsSuccessModalOpen(true);
+          }}
+        />
+      )}
+
+      <SellerRatingModal 
+        isOpen={isRatingModalOpen} 
+        onClose={() => {
+          setIsRatingModalOpen(false);
+          setIsEnquiryModalOpen(true); // Go back to enquiry modal
+        }} 
+      />
+
+      <SuccessModal 
+        isOpen={isSuccessModalOpen} 
+        onClose={handleCloseAll}
+      />
     </div>
   );
 }
