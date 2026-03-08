@@ -17,35 +17,28 @@ export default function EnquiryModal({
 }: EnquiryModalProps) {
   const details = [
     {
-      leftLabel: "Ad_status",
-      leftVal: enquiry.adStatus || "Active",
-      rightLabel: "purpose",
-      rightVal: enquiry.purpose || "The Purpose of The ad",
+      leftLabel: "Category",
+      leftVal: enquiry.category,
+      rightLabel: "Sub Category",
+      rightVal: enquiry.subCategory,
     },
     {
-      leftLabel: "start_date",
-      leftVal: enquiry.startDate || "2024-03-01",
-      rightLabel: "qualification",
-      rightVal: enquiry.qualification || "QUALIFICATION",
+      leftLabel: "Posted Time",
+      leftVal: enquiry.time,
+      rightLabel: "Type",
+      rightVal: enquiry.type,
     },
     {
-      leftLabel: "standard",
-      leftVal: enquiry.standard || "STANDARD",
-      rightLabel: "expiry date",
-      rightVal: enquiry.expiryDate || "2024-11-13",
-    },
-    {
-      leftLabel: "description",
-      leftVal: enquiry.description || "This Ad Description",
-      rightLabel: "",
-      rightVal: "",
+      leftLabel: "Client Rate",
+      leftVal: `${enquiry.clientRate}`,
+      rightLabel: "VT Rate",
+      rightVal: `${enquiry.vtRate}`,
     },
   ];
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[2000] p-4 font-outfit">
       <div className="bg-[#EEF0F2] w-full max-w-[950px] rounded-[24px] p-8 md:p-12 relative animate-in fade-in zoom-in duration-300 shadow-2xl overflow-hidden">
-        {/* Close Button - Matches the black square style */}
         <button
           onClick={onClose}
           className="absolute top-6 left-6 bg-black text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-all z-20 active:scale-90"
@@ -67,8 +60,8 @@ export default function EnquiryModal({
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-10 items-center">
           <div className="flex flex-col">
-            <h2 className="text-[48px] font-medium mb-8 text-black tracking-tight leading-tight">
-              {enquiry.title || "Machine for sale"}
+            <h2 className="text-[32px] md:text-[48px] font-medium mb-8 text-black tracking-tight leading-tight">
+              {enquiry.title}
             </h2>
 
             <div className="bg-[#D9D9D9]/50 rounded-[12px] overflow-hidden border border-gray-300">
@@ -80,7 +73,7 @@ export default function EnquiryModal({
                   <div className="bg-gray-200/50 p-3 font-semibold text-gray-600 border-r border-gray-300 capitalize">
                     {row.leftLabel}
                   </div>
-                  <div className="p-3 bg-transparent font-bold text-black border-r border-gray-300 truncate">
+                  <div className="p-3 bg-white/30 font-bold text-black truncate border-r border-gray-300">
                     {row.leftVal}
                   </div>
                   <div className="bg-gray-200/50 p-3 font-semibold text-gray-600 border-r border-gray-300 capitalize">
@@ -104,43 +97,6 @@ export default function EnquiryModal({
                   className="object-cover"
                 />
               </div>
-
-              <button className="absolute left-[-30px] top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
-                <svg
-                  className="w-8 h-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-              <button className="absolute right-[-30px] top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
-                <svg
-                  className="w-8 h-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-gray-400"></div>
-                <div className="w-2 h-2 rounded-full bg-black"></div>
-                <div className="w-2 h-2 rounded-full bg-gray-400"></div>
-              </div>
             </div>
 
             <div className="w-full max-w-[280px] space-y-3">
@@ -149,19 +105,7 @@ export default function EnquiryModal({
                 className="w-full h-10 bg-[#F2D361] rounded-[8px] flex items-center justify-between px-4 font-semibold text-[14px] text-gray-700 shadow-sm hover:brightness-95 transition-all"
               >
                 <span>Seller rating</span>
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                  />
-                </svg>
+                <span className="text-black font-bold">{enquiry.vtRate}</span>
               </button>
               <form action={submitAction}>
                 <button className="w-full h-14 bg-[#F2D361] rounded-[8px] font-bold text-[18px] text-gray-800 shadow-md hover:brightness-95 transition-all active:scale-[0.98]">

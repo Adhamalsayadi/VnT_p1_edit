@@ -57,31 +57,30 @@ export default function GlobalModal({
     "Customer satisfactory program",
   ];
 
-  /* -------------------- ENQUIRY DATA -------------------- */
-
+  // Logic updated to only use existing properties from AnyEnquiry interface
   const details = enquiry
     ? [
         {
-          leftLabel: "Ad_status",
-          leftVal: enquiry.adStatus || "Active",
-          rightLabel: "purpose",
-          rightVal: enquiry.purpose || "The Purpose of The ad",
+          leftLabel: "Category",
+          leftVal: enquiry.category,
+          rightLabel: "Sub Category",
+          rightVal: enquiry.subCategory,
         },
         {
-          leftLabel: "start_date",
-          leftVal: enquiry.startDate || "2024-03-01",
-          rightLabel: "qualification",
-          rightVal: enquiry.qualification || "QUALIFICATION",
+          leftLabel: "Posted Time",
+          leftVal: enquiry.time,
+          rightLabel: "Listing Type",
+          rightVal: enquiry.type,
         },
         {
-          leftLabel: "standard",
-          leftVal: enquiry.standard || "STANDARD",
-          rightLabel: "expiry date",
-          rightVal: enquiry.expiryDate || "2024-11-13",
+          leftLabel: "Client Rate",
+          leftVal: `${enquiry.clientRate}`,
+          rightLabel: "VT Rate",
+          rightVal: `${enquiry.vtRate}`,
         },
         {
-          leftLabel: "description",
-          leftVal: enquiry.description || "This Ad Description",
+          leftLabel: "ID",
+          leftVal: enquiry.id,
           rightLabel: "",
           rightVal: "",
         },
@@ -94,7 +93,6 @@ export default function GlobalModal({
     <AnimatePresence>
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[4000] p-4 font-outfit">
         {/* -------------------- SUCCESS MODAL -------------------- */}
-
         {type === "success" && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -105,9 +103,7 @@ export default function GlobalModal({
             <h2 className="text-[32px] font-medium mb-4 text-black">
               {message}
             </h2>
-
             <p className="text-gray-500 max-w-[500px]">{submessage}</p>
-
             <button
               onClick={onClose}
               className="mt-12 w-full max-w-[240px] h-14 bg-[#F2D361] rounded-[12px] font-bold text-[18px]"
@@ -118,7 +114,6 @@ export default function GlobalModal({
         )}
 
         {/* -------------------- SELLER RATING MODAL -------------------- */}
-
         {type === "rating" && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -132,7 +127,6 @@ export default function GlobalModal({
             >
               ←
             </button>
-
             <div className="grid md:grid-cols-2 gap-8">
               <div>
                 {leftCriteria.map((item) => (
@@ -146,7 +140,6 @@ export default function GlobalModal({
                   </div>
                 ))}
               </div>
-
               <div>
                 {ratedCriteria.map((label, idx) => (
                   <div key={idx} className="border-b py-2">
@@ -164,7 +157,6 @@ export default function GlobalModal({
         )}
 
         {/* -------------------- ENQUIRY MODAL -------------------- */}
-
         {type === "enquiry" && enquiry && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -181,8 +173,8 @@ export default function GlobalModal({
 
             <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-10">
               <div>
-                <h2 className="text-[48px] font-medium mb-8">
-                  {enquiry.title || "Machine for sale"}
+                <h2 className="text-[32px] md:text-[48px] font-medium mb-8">
+                  {enquiry.title}
                 </h2>
 
                 <div className="bg-[#D9D9D9]/50 rounded-[12px] overflow-hidden border">
@@ -194,13 +186,10 @@ export default function GlobalModal({
                       <div className="bg-gray-200 p-3 font-semibold">
                         {row.leftLabel}
                       </div>
-
                       <div className="p-3 font-bold">{row.leftVal}</div>
-
                       <div className="bg-gray-200 p-3 font-semibold">
                         {row.rightLabel}
                       </div>
-
                       <div className="p-3 font-bold">{row.rightVal}</div>
                     </div>
                   ))}
@@ -224,7 +213,6 @@ export default function GlobalModal({
                   >
                     Seller rating
                   </button>
-
                   <form action={submitAction}>
                     <button className="w-full h-14 bg-[#F2D361] rounded-[8px] font-bold text-[18px]">
                       Submit your RFQ
