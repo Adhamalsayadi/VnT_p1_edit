@@ -14,7 +14,7 @@ export default function Services() {
           Providing high quality in-order to be day-to-day updated
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 my-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 my-8">
           {HOME_SERVICE_OPTIONS.map((service) => (
             <button
               key={service.label}

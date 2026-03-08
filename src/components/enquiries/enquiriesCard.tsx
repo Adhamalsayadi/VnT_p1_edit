@@ -27,11 +27,11 @@ export default function EnquiriesCard({ enquiries = [] }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       {enquiries.slice(0, 6).map((item) => (
         <SurfaceCard
           key={item.id}
-          className="bg-[#f5f5f5] w-[316.03px] flex flex-col items-center justify-center rounded-custom p-[20px_20px] text-center"
+          className="bbg-[#f5f5f5] flex flex-col items-center justify-center rounded-custom p-4 md:p-[20px_20px] text-center w-full"
         >
           <h2 className="font-semibold text-[22px] text-dark mb-">
             {item.title}
@@ -55,7 +55,7 @@ export default function EnquiriesCard({ enquiries = [] }: Props) {
 
           <Button
             onClick={() => openEnquiry(item)}
-            className="w-[197px] mt-3 capitalize"
+            className="w-full max-w-[160px] md:w-[197px] mt-3 h-9 md:h-11 text-[10px] md:text-sm capitalize"
           >
             View more details
           </Button>
