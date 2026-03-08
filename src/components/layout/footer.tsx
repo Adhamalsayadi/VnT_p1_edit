@@ -13,8 +13,9 @@ import { FOOTER_SUPPORT_LINKS, FOOTER_USEFUL_LINKS } from "@/config/public";
 
 export default function Footer() {
   return (
-    <footer className="bg-white py-[60px] border-t border-[#e5e7eb] mt-[100px]">
-      <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10">
+    <footer className="bg-white py-10 md:py-[60px] border-t border-[#e5e7eb] mt-12 md:mt-[100px]">
+      <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10">
+        {/* Info Section */}
         <div className="footer-info">
           <Image
             src="/VT.png"
@@ -23,10 +24,10 @@ export default function Footer() {
             height={54}
             className="logo-image"
           />
-          <p className="my-5 text-[#666] max-w-[250px]">
+          <p className="my-5 text-[#666] max-w-[250px] text-sm md:text-base">
             A company to publish services across multiple industries.
           </p>
-          <div className="flex gap-[15px] text-[20px] text-dark">
+          <div className="flex gap-[15px] text-dark">
             <SocialIcon href="#" label="Facebook">
               <Facebook size={18} />
             </SocialIcon>
@@ -45,27 +46,29 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Links Sections */}
         <FooterColumn title="Useful Links" links={FOOTER_USEFUL_LINKS} />
         <FooterColumn title="Support" links={FOOTER_SUPPORT_LINKS} />
 
+        {/* Contact Section */}
         <div className="footer-links">
           <h3 className="mb-5 text-[18px] font-semibold">Contacts us</h3>
           <ul className="space-y-2.5">
             <li>
               <Link
                 href="mailto:Vnt@gmail.com"
-                className="flex items-center gap-2 text-[#666] hover:text-primary transition-colors"
+                className="flex items-center gap-2 text-[#666] hover:text-primary transition-colors text-sm md:text-base"
               >
-                <Mail size={16} />
-                Vnt@gmail.com
+                <Mail size={16} className="shrink-0" />
+                <span className="break-all">Vnt@gmail.com</span>
               </Link>
             </li>
             <li>
               <Link
                 href="tel:0101235772"
-                className="flex items-center gap-2 text-[#666] hover:text-primary transition-colors"
+                className="flex items-center gap-2 text-[#666] hover:text-primary transition-colors text-sm md:text-base"
               >
-                <Phone size={16} />
+                <Phone size={16} className="shrink-0" />
                 (010) 123 – 5772
               </Link>
             </li>
@@ -91,7 +94,7 @@ function FooterColumn({
           <li key={link.label}>
             <Link
               href={link.href}
-              className="text-[#666] hover:text-primary transition-colors"
+              className="text-[#666] hover:text-primary transition-colors text-sm md:text-base"
             >
               {link.label}
             </Link>
@@ -115,7 +118,7 @@ function SocialIcon({
     <Link
       href={href}
       aria-label={label}
-      className="text-dark hover:text-primary transition-colors"
+      className="text-dark hover:text-primary transition-colors p-1"
     >
       {children}
     </Link>

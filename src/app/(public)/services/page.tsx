@@ -1,10 +1,12 @@
-import ServicesHero from "@/components/Service/ServicesHero";
-import ContentsServices from "@/components/Service/servicescontents";
-import ServicesAds from "@/components/Service/servicesads";
-import { getServiceCategories } from "@/lib/api/services";
+import ServicesHero from "@/components/service/ServicesHero";
+import ContentsServices from "@/components/service/servicescontents";
+import ServicesAds from "@/components/service/servicesads";
+import { getServiceCategories } from "@/lib/api/services/services";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Services | VnT Platform",
@@ -17,8 +19,7 @@ interface Props {
   searchParams: Promise<{ category?: string }>;
 }
 
-export default async function ServicesPage({ searchParams }: Props) {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+async function ServicesContent({ searchParams }: Props) {
   const categories = await getServiceCategories();
 
   const { category } = await searchParams;
@@ -34,10 +35,16 @@ export default async function ServicesPage({ searchParams }: Props) {
   return (
     <>
       <ServicesHero categories={categories} activeCategory={finalCategory.id} />
-
       <ContentsServices subCategories={finalCategory.subCategories} />
-
       <ServicesAds />
     </>
+  );
+}
+
+export default function ServicesPage({ searchParams }: Props) {
+  return (
+    <Suspense fallback={<Loading />}>
+      <ServicesContent searchParams={searchParams} />
+    </Suspense>
   );
 }

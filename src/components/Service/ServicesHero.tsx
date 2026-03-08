@@ -1,8 +1,5 @@
 import ServiceGrid from "@/components/shared/Service";
-import type {
-  ServiceCategory,
-  ServiceCategoryId,
-} from "../../types/service.types";
+import type { ServiceCategory, ServiceCategoryId } from "@/types/service.types";
 
 interface Props {
   categories: ServiceCategory[];

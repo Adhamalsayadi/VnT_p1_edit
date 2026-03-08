@@ -1,10 +1,10 @@
 "use client";
-
+import { submitAction } from "@/actions/actionbutton";
 import Image from "next/image";
-import { EnquiryM } from "@/types/enquiries";
+import { AnyEnquiry } from "@/types/enquiries";
 
 interface EnquiryModalProps {
-  enquiry: EnquiryM;
+  enquiry: AnyEnquiry;
   onClose: () => void;
   onOpenRating: () => void;
   onSubmitRfq: () => void;
@@ -14,9 +14,7 @@ export default function EnquiryModal({
   enquiry,
   onClose,
   onOpenRating,
-  onSubmitRfq,
 }: EnquiryModalProps) {
-  // Organized into pairs to match the "Table" look in the screenshots
   const details = [
     {
       leftLabel: "Ad_status",
@@ -68,7 +66,6 @@ export default function EnquiryModal({
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-10 items-center">
-          {/* Left Column: Info Table */}
           <div className="flex flex-col">
             <h2 className="text-[48px] font-medium mb-8 text-black tracking-tight leading-tight">
               {enquiry.title || "Machine for sale"}
@@ -97,7 +94,6 @@ export default function EnquiryModal({
             </div>
           </div>
 
-          {/* Right Column: Image & Actions */}
           <div className="flex flex-col items-center">
             <div className="relative group mb-8">
               <div className="w-[260px] h-[260px] rounded-full overflow-hidden border-[6px] border-[#EEF0F2] shadow-xl relative ring-1 ring-gray-200">
@@ -109,7 +105,6 @@ export default function EnquiryModal({
                 />
               </div>
 
-              {/* Navigation Arrows */}
               <button className="absolute left-[-30px] top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
                 <svg
                   className="w-8 h-8"
@@ -141,7 +136,6 @@ export default function EnquiryModal({
                 </svg>
               </button>
 
-              {/* Dots */}
               <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-gray-400"></div>
                 <div className="w-2 h-2 rounded-full bg-black"></div>
@@ -169,13 +163,11 @@ export default function EnquiryModal({
                   />
                 </svg>
               </button>
-
-              <button
-                onClick={onSubmitRfq}
-                className="w-full h-14 bg-[#F2D361] rounded-[8px] font-bold text-[18px] text-gray-800 shadow-md hover:brightness-95 transition-all active:scale-[0.98]"
-              >
-                Submit your RFQ
-              </button>
+              <form action={submitAction}>
+                <button className="w-full h-14 bg-[#F2D361] rounded-[8px] font-bold text-[18px] text-gray-800 shadow-md hover:brightness-95 transition-all active:scale-[0.98]">
+                  Submit your RFQ
+                </button>
+              </form>
             </div>
           </div>
         </div>

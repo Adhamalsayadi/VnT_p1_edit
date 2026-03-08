@@ -1,76 +1,53 @@
-import EnquiriesHero from "@/components/enquiries/components/enquirieshero";
-import SearchBar from "@/components/enquiries/components/searchbar";
+import EnquiriesHero from "@/components/enquiries/enquirieshero";
+import SearchBar from "@/components/enquiries/searchbar";
 import ServiceGrid from "@/components/shared/Service";
-import Mainlayout from "@/components/enquiries/components/mainlayout";
-import Pagination from "@/components/enquiries/components/Pagination";
-import { getServiceCategories } from "@/lib/api/services";
+import Mainlayout from "@/components/enquiries/mainlayout";
+import Pagination from "@/components/enquiries/Pagination";
 import EmptyState from "@/components/ui/empty-state";
-import type { Metadata } from "next";
-import ContentsServices from "@/components/Service/servicescontents";
-import { buildPageMetadata } from "@/lib/seo";
-import { fetchEnquiries } from "@/lib/api/enquiries";
+import ContentsServices from "@/components/service/servicescontents";
+import { getServiceCategories } from "@/lib/api/services/services";
+import { fetchEnquiries } from "@/lib/api/enquiries/enquiries";
 import { EnquiryFilters } from "@/types/enquiries";
-
+import { buildPageMetadata } from "@/lib/seo";
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import Loading from "./loading";
 export const metadata: Metadata = buildPageMetadata({
   title: "Enquiries | VnT Platform",
   description:
     "Browse the latest procurement and service enquiries, filter by category, rating, and timeframe.",
   path: "/enquiries",
 });
-
 interface Props {
   searchParams: Promise<EnquiryFilters & { page?: string }>;
 }
 
-export default async function EnquiriesPage({ searchParams }: Props) {
+async function EnquiriesContent({ searchParams }: Props) {
   const params = await searchParams;
-
   const page = Number(params.page) || 1;
   const pageSize = 10;
 
-  const {
-    search = "",
-    category = "",
-    subCategory = "",
-    time = "",
-    clientRate = "",
-    vtRate = "",
-  } = params;
+  const [categories, enquiryResult] = await Promise.all([
+    getServiceCategories(),
+    fetchEnquiries({ ...params, page, pageSize }),
+  ]);
 
-  const categories = await getServiceCategories();
-
-  const activeCategory = categories.find((c) => c.id === category);
-
-  const finalCategory = activeCategory ?? categories[0];
-
-  const { data: enquiries, total } = await fetchEnquiries({
-    search,
-    category: finalCategory.id,
-    subCategory,
-    time,
-    clientRate,
-    vtRate,
-    page,
-    pageSize,
-  });
-
-  const totalPages = Math.ceil(total / pageSize);
+  const activeCategory = categories.find((c) => c.id === params.category);
+  const totalPages = Math.ceil(enquiryResult.total / pageSize);
 
   return (
-    <div>
-      <EnquiriesHero />
-
-      <SearchBar />
-
+    <>
       <ServiceGrid
         items={categories}
         variant="enquiries"
-        activeId={finalCategory.id}
+        activeId={activeCategory?.id}
       />
 
-      <ContentsServices subCategories={finalCategory.subCategories} />
+      {activeCategory && (
+        <ContentsServices subCategories={activeCategory.subCategories} />
+      )}
 
-      {enquiries.length === 0 ? (
+      {enquiryResult.data.length === 0 ? (
         <EmptyState
           title="No enquiries match these filters"
           description="Try broadening your search or clear filters to see all enquiries."
@@ -79,10 +56,22 @@ export default async function EnquiriesPage({ searchParams }: Props) {
         />
       ) : (
         <>
-          <Mainlayout enquiries={enquiries} />
+          <Mainlayout enquiries={enquiryResult.data} />
           <Pagination totalPages={totalPages} currentPage={page} />
         </>
       )}
+    </>
+  );
+}
+
+export default function EnquiriesPage({ searchParams }: Props) {
+  return (
+    <div>
+      <EnquiriesHero />
+      <SearchBar />
+      <Suspense fallback={<Loading />}>
+        <EnquiriesContent searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 }

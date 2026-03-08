@@ -1,5 +1,5 @@
-import AboutHero from "@/components/about/components/about-hero";
-import AboutCard from "@/components/about/components/card";
+import AboutHero from "@/components/about/about-hero";
+import AboutCard from "@/components/about/card";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
 

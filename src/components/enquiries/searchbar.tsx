@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import { ENQUIRY_FILTERS } from "@/config/public";
 
 export default function SearchBar() {
@@ -9,6 +10,10 @@ export default function SearchBar() {
   const params = useSearchParams();
 
   const [searchValue, setSearchValue] = useState(params.get("search") || "");
+
+  useEffect(() => {
+    setSearchValue(params.get("search") || "");
+  }, [params]);
 
   const updateParam = (key: string, value: string) => {
     const newParams = new URLSearchParams(params.toString());
@@ -19,6 +24,20 @@ export default function SearchBar() {
       newParams.delete(key);
     }
 
+    if (key === "category") {
+      if (value) {
+        newParams.set("source", "dropdown");
+      } else {
+        newParams.delete("source");
+      }
+      newParams.delete("search");
+      newParams.delete("subCategory");
+    } else if (key === "subCategory") {
+      if (value) {
+        newParams.set("source", "dropdown");
+      }
+    }
+
     router.push(`?${newParams.toString()}`);
   };
 
@@ -27,20 +46,26 @@ export default function SearchBar() {
 
     const newParams = new URLSearchParams(params.toString());
 
-    if (searchValue) {
-      newParams.set("search", searchValue);
+    if (searchValue.trim()) {
+      newParams.set("search", searchValue.trim());
     } else {
       newParams.delete("search");
     }
 
+    newParams.delete("subCategory");
+
     router.push(`?${newParams.toString()}`);
   };
 
-  const inputSelectClasses = "border border-border-light rounded-lg h-[74px] font-inherit text-sm transition-all cursor-pointer focus:outline-none focus:border-primary focus:bg-white focus:shadow-[0_0_0_3px_rgba(243,212,90,0.1)]";
+  const inputSelectClasses =
+    "border border-border-light rounded-lg h-[74px] font-inherit text-sm transition-all cursor-pointer focus:outline-none focus:border-primary focus:bg-white focus:shadow-[0_0_0_3px_rgba(243,212,90,0.1)]";
 
   return (
     <div className="flex rounded-[20px] min-h-[120px] gap-4 p-4">
-      <form onSubmit={handleSubmit} className="flex justify-between items-center p-5 w-full gap-3">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col lg:flex-row justify-between items-center p-5 w-full gap-3"
+      >
         <input
           id="search-query"
           type="search"
@@ -60,17 +85,23 @@ export default function SearchBar() {
             className={`${inputSelectClasses} w-[216px] capitalize text-center p-3`}
           >
             <option value="">{select.label}</option>
-            {select.options.map((opt) => (
-              typeof opt === "string" 
-                ? <option key={opt} value={opt}>{opt}</option>
-                : <option key={opt.v} value={opt.v}>{opt.l}</option>
-            ))}
+            {select.options.map((opt) =>
+              typeof opt === "string" ? (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ) : (
+                <option key={opt.v} value={opt.v}>
+                  {opt.l}
+                </option>
+              )
+            )}
           </select>
         ))}
 
         <button
           type="submit"
-          className="h-[74px] w-[119px] bg-primary text-black border-none rounded-xl font-semibold capitalize transition-all hover:bg-[#f0ca2a] hover:shadow-[0_4px_12px_rgba(243,212,90,0.3)] focus:outline-2 focus:outline-primary focus:outline-offset-2"
+          className="h-[60px] md:h-[74px] w-full lg:w-[119px] bg-primary text-black border-none rounded-xl font-semibold capitalize transition-all hover:bg-[#f0ca2a] hover:shadow-lg"
         >
           Search
         </button>

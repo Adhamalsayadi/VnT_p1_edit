@@ -48,10 +48,15 @@ export default function ServiceGrid({
             : `/services?category=${item.id}`;
 
         if (variant === "hero" || variant === "enquiries") {
+          const finalHref =
+            variant === "enquiries"
+              ? `/enquiries?category=${item.id}&source=icon`
+              : href;
+
           return (
             <Link
               key={item.id}
-              href={href}
+              href={finalHref}
               className={`${baseClass} ${variantClasses[variant]} ${
                 isActive
                   ? "bg-primary shadow-sm"

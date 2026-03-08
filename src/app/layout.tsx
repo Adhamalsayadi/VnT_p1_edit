@@ -22,7 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="overflow-x-hidden antialiased">
+        <main className="relative w-full overflow-x-hidden">{children}</main>
+      </body>
     </html>
   );
 }

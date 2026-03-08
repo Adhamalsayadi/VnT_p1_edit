@@ -30,7 +30,6 @@ export type SelectFilterOption = {
 export const NAV_LINKS: NavLink[] = [
   { name: "home", href: "/" },
   { name: "enquiries", href: "/enquiries" },
-  { name: "advertisments", href: "/advertisments" },
   { name: "services", href: "/services" },
   { name: "about", href: "/about" },
   { name: "contact", href: "/contact" },
@@ -80,7 +79,7 @@ export const ENQUIRY_FILTERS: SelectFilterOption[] = [
 export const FOOTER_USEFUL_LINKS = [
   { label: "About", href: "/about" },
   { label: "Contact us", href: "/contact" },
-  { label: "Ads", href: "/advertisments" },
+  { label: "Ads", href: "/enquiries" },
   { label: "Why us", href: "/about" },
 ];
 

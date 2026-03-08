@@ -1,4 +1,4 @@
-import ContactHero from "@/components/contact/components/contacthero";
+import ContactHero from "@/components/contact/contacthero";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
 
