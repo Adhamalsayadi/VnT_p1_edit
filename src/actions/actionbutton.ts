@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function submitAction() {
+export async function submitAction(formData: FormData) {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 

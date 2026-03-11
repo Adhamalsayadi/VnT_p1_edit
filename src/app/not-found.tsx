@@ -1,17 +1,24 @@
 import Link from "next/link";
+import Button from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <div className="h-[80vh] flex flex-col items-center justify-center text-center p-5">
-      <h1 className="text-[120px] font-extrabold text-[#333] leading-none m-0">404</h1>
-      <div className="w-[100px] h-1.5 bg-primary my-5 rounded-[3px]"></div>
-      <h2 className="text-[32px] font-bold mb-[15px]">Oops! Page not found</h2>
-      <p className="text-lg text-[#888] max-w-[500px] mb-10">
-        The page you are looking for might have been removed or is temporarily
-        unavailable.
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-6 text-center">
+      <div className="relative mb-8">
+        <h1 className="text-[120px] font-black text-[#F2F4F7] leading-none">404</h1>
+        <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-[#101828] whitespace-nowrap">
+          Oops! Page not found
+        </p>
+      </div>
+      
+      <p className="text-[#667085] text-lg max-w-md mb-10">
+        The page you are looking for might have been removed or is temporarily unavailable.
       </p>
-      <Link href="/" className="bg-primary text-black p-[15px_40px] rounded-xl font-bold no-underline transition-all hover:scale-105 active:scale-95">
-        Back to home
+
+      <Link href="/">
+        <Button size="lg" className="bg-[#f0d05c] hover:bg-[#e0c04c] text-black border-none px-8">
+          Back to home
+        </Button>
       </Link>
     </div>
   );

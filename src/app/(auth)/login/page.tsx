@@ -1,7 +1,47 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation"; // 1. Import useRouter
+import { loginUser } from "@/lib/api/auth/login";
 
 export default function LoginPage() {
+  const router = useRouter(); // 2. Initialize router
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const result = await loginUser(email, password);
+
+      if (result.success && result.role) {
+        // 3. REDIRECT LOGIC BASED ON ROLE
+
+        if (result.role === "Client") {
+          // Redirect Client to Client Dashboard
+          router.push("/client");
+        } else {
+          // Redirect Supplier to Supplier Dashboard
+          router.push("/supplier");
+        }
+      } else {
+        setError(result.message);
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-white relative overflow-x-hidden">
       <header className="flex justify-between items-center py-4 px-6 md:py-5 md:px-10 absolute top-0 w-full z-20">
@@ -50,31 +90,51 @@ export default function LoginPage() {
             log in
           </p>
 
-          <div className="mb-5 md:mb-[25px]">
-            <label className="block text-base md:text-[18px] font-semibold mb-2 text-[#333]">
-              Email
-            </label>
-            <input
-              type="email"
-              className="w-full lg:w-[50%] p-3 md:p-[15px_20px] bg-[#ebeef5] border-none rounded-lg text-base outline-none focus:ring-2 focus:ring-primary/20"
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-5 md:mb-[25px]">
+              <label className="block text-base md:text-[18px] font-semibold mb-2 text-[#333]">
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full lg:w-[50%] p-3 md:p-[15px_20px] bg-[#ebeef5] border-none rounded-lg text-base outline-none focus:ring-2 focus:ring-primary/20"
+                placeholder="client@test.com"
+                required
+              />
+            </div>
 
-          <div className="mb-5 md:mb-[25px]">
-            <label className="block text-base md:text-[18px] font-semibold mb-2 text-[#333]">
-              Password
-            </label>
-            <input
-              type="password"
-              className="w-full lg:w-[50%] p-3 md:p-[15px_20px] bg-[#ebeef5] border-none rounded-lg text-base outline-none focus:ring-2 focus:ring-primary/20"
-            />
-          </div>
+            <div className="mb-5 md:mb-[25px]">
+              <label className="block text-base md:text-[18px] font-semibold mb-2 text-[#333]">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full lg:w-[50%] p-3 md:p-[15px_20px] bg-[#ebeef5] border-none rounded-lg text-base outline-none focus:ring-2 focus:ring-primary/20"
+                placeholder="password"
+                required
+              />
+            </div>
 
-          <div className="flex justify-center md:justify-end mt-8 md:mt-10">
-            <button className="w-full md:w-auto bg-primary py-3 px-10 rounded-lg font-semibold text-base border-none hover:-translate-y-0.5 transition-all shadow-md">
-              Continue
-            </button>
-          </div>
+            {error && (
+              <div className="text-red-500 text-sm mb-4 lg:w-[50%]">
+                {error}
+              </div>
+            )}
+
+            <div className="flex justify-center md:justify-end mt-8 md:mt-10">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full md:w-auto bg-primary py-3 px-10 rounded-lg font-semibold text-base border-none hover:-translate-y-0.5 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "Logging in..." : "Continue"}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
