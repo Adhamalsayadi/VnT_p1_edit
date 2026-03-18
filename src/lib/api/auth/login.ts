@@ -3,7 +3,7 @@ import { User } from "@/types/users";
 export interface LoginResponse {
   success: boolean;
   message: string;
-  role?: "Client" | "Supplier";
+  role?: "Client" | "Supplier" | "Admin";
   user?: User;
 }
 
