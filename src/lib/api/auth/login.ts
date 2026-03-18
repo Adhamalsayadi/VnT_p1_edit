@@ -42,5 +42,20 @@ export async function loginUser(
     };
   }
 
+  if (email === "mockm@m.com" && password === "mock") {
+    return {
+      success: true,
+      message: "Login successful",
+      role: "Admin",
+      user: {
+        id: "3",
+        name: "mock Marketer",
+        email,
+        role: "Admin",
+        phone: "",
+      },
+    };
+  }
+
   return { success: false, message: "Invalid email or password" };
 }

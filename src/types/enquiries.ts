@@ -22,6 +22,7 @@ export interface Enquiry {
   createdByUserId?: string;
   createdByUserName?: string;
   isHidden?: boolean;
+  acceptedPrice?: number | null;
 }
 
 export interface SellerRatingCriterion {
