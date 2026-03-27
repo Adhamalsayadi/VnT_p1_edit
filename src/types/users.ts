@@ -55,7 +55,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "Client" | "Supplier" | "Admin";
+  role: "Client" | "Supplier" | "Admin" | "SuperAdmin" | "SubAdmin";
   phone?: string;
   avatar?: string;
   status?: "active" | "pending" | "inactive";

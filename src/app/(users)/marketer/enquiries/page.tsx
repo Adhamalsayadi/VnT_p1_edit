@@ -17,8 +17,10 @@ import {
   useToggleEnquiryVisibility,
 } from "@/hooks/useEnquiries";
 import { Enquiry } from "@/types/enquiries";
+import { useModalFlow } from "@/hooks/useModalFlow";
 
 export default function MarketerEnquiriesPage() {
+  const { openEnquiry, renderModals } = useModalFlow();
   const { activeEnquiry, modalType, openModal, closeModal } =
     useEnquiryModalStore();
 
@@ -46,6 +48,9 @@ export default function MarketerEnquiriesPage() {
         break;
       case "Edit":
         openModal("edit", enquiry);
+        break;
+      case "View":
+        openEnquiry(enquiry);
         break;
       case "Hide":
         toggleVisibility.mutate(id);
@@ -171,7 +176,12 @@ export default function MarketerEnquiriesPage() {
                           {index + 1}
                         </td>
                         <td className="px-6 py-5 text-sm font-semibold text-[#101828]">
-                          {enq.title}
+                          <button 
+                            onClick={() => openEnquiry(enq)}
+                            className="hover:text-primary transition-colors text-left"
+                          >
+                            {enq.title}
+                          </button>
                         </td>
                         <td className="px-6 py-5 text-sm text-[#667085]">
                           {enq.createdByUserName || "N/A"}
@@ -245,16 +255,24 @@ export default function MarketerEnquiriesPage() {
       <EditEnquiryModal
         isOpen={isEditModalOpen}
         onClose={closeModal}
-        enquiry={
-          activeEnquiry
-            ? {
-                ...activeEnquiry,
-                status: activeEnquiry.enquiryStatus.toLowerCase(),
-              }
-            : null
-        }
-        onSave={saveEdit}
+        enquiry={activeEnquiry}
+        onSave={(data) => {
+          if (activeEnquiry) {
+            updateEnquiry.mutate(
+              {
+                id: activeEnquiry.id,
+                payload: {
+                  ...data,
+                  quantity: data.quantity ? Number(data.quantity) : undefined,
+                },
+              },
+              { onSuccess: closeModal }
+            );
+          }
+        }}
       />
+
+      {renderModals()}
     </div>
   );
 }

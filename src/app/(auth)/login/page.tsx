@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // 1. Import useRouter
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 import { loginUser } from "@/lib/api/auth/login";
 import { useAuthStore } from "@/store/authStore";
 
@@ -13,6 +14,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,6 +35,10 @@ export default function LoginPage() {
           router.push("/client");
         } else if (result.role === "Admin") {
           router.push("/marketer");
+        } else if (result.role === "SuperAdmin") {
+          router.push("/super-admin");
+        } else if (result.role === "SubAdmin") {
+          router.push("/sub-admin");
         } else {
           router.push("/supplier");
         }
@@ -109,18 +115,33 @@ export default function LoginPage() {
               />
             </div>
 
-            <div className="mb-5 md:mb-[25px]">
+            <div className="mb-2">
               <label className="block text-base md:text-[18px] font-semibold mb-2 text-[#333]">
                 Password
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full lg:w-[50%] p-3 md:p-[15px_20px] bg-[#ebeef5] border-none rounded-lg text-base outline-none focus:ring-2 focus:ring-primary/20"
-                placeholder="password"
-                required
-              />
+              <div className="relative w-full lg:w-[50%]">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-3 md:p-[15px_20px] bg-[#ebeef5] border-none rounded-lg text-base outline-none focus:ring-2 focus:ring-primary/20 pr-12"
+                  placeholder="password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#98A2B3] hover:text-[#344054] transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+            <div className="mb-5 md:mb-[25px]">
+              <Link href="/forgot-password" className="text-sm text-primary font-semibold hover:underline">
+                Forget password?
+              </Link>
             </div>
 
             {error && (

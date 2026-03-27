@@ -126,9 +126,11 @@ export default function Header({ role }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-3 md:gap-4">
-          <Link href="/enquiries" className="hidden sm:block">
-            <Button className="h-10 px-4 text-sm">Post enquiry</Button>
-          </Link>
+          {role === "Client" && (
+            <Link href="/client/enquiries/upload" className="hidden sm:block">
+              <Button className="h-10 px-4 text-sm">Post enquiry</Button>
+            </Link>
+          )}
 
           <div className="relative" ref={dropdownRef}>
             <button
@@ -179,7 +181,7 @@ export default function Header({ role }: HeaderProps) {
                   onClick={() => setIsDropdownOpen(false)}
                 >
                   <ShieldCheck size={16} className="text-[#667085]" />
-                  Reset password
+                  Change password
                 </Link>
 
                 <div className="my-2 border-t border-[#F2F4F7]"></div>
@@ -225,13 +227,15 @@ export default function Header({ role }: HeaderProps) {
               </Link>
             ))}
 
-            <Link
-              href="/enquiries"
-              className="pt-2"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <Button className="h-10 w-full text-sm">Post enquiry</Button>
-            </Link>
+            {role === "Client" && (
+              <Link
+                href="/client/enquiries/upload"
+                className="pt-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Button className="h-10 w-full text-sm">Post enquiry</Button>
+              </Link>
+            )}
 
             <Link
               href={dashboardHref}

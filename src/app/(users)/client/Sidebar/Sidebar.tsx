@@ -59,6 +59,7 @@ const Sidebar = ({ role }: SidebarProps) => {
       href: "/marketer/enquiries",
       icon: <FileText size={18} />,
     },
+    { name: "offers", href: "/marketer/offers", icon: <Star size={18} /> },
     { name: "deals", href: "/marketer/deals", icon: <Tag size={18} /> },
   ];
 

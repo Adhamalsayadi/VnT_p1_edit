@@ -442,6 +442,16 @@ export interface UpdateEnquiryPayload {
   title?: string;
   quantity?: number;
   enquiryStatus?: string;
+  category?: string;
+  categoryLabel?: string;
+  subCategory?: string;
+  subCategoryLabel?: string;
+  requiredDate?: string;
+  requestType?: string;
+  purpose?: string;
+  enquiryEta?: string;
+  standard?: string;
+  image?: string;
 }
 
 export async function fetchEnquiries(

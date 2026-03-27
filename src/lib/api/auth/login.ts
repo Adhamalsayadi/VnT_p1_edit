@@ -3,7 +3,7 @@ import { User } from "@/types/users";
 export interface LoginResponse {
   success: boolean;
   message: string;
-  role?: "Client" | "Supplier" | "Admin";
+  role?: "Client" | "Supplier" | "Admin" | "SuperAdmin" | "SubAdmin";
   user?: User;
 }
 
@@ -15,8 +15,23 @@ export async function loginUser(
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   // --- MOCK LOGIC ---
-  // In a real app, you would use axios to call your backend
-  // and get the real user role.
+  if (email === "super@vnt.com" && password === "super") {
+    return {
+      success: true,
+      message: "Login successful",
+      role: "SuperAdmin",
+      user: { id: "super-1", name: "Super Admin", email, role: "SuperAdmin" },
+    };
+  }
+
+  if (email === "vtm@vnt.com" && password === "vtm") {
+    return {
+      success: true,
+      message: "Login successful",
+      role: "SubAdmin",
+      user: { id: "vtm-1", name: "VTM Controller", email, role: "SubAdmin" },
+    };
+  }
 
   if (email === "mock@m.com" && password === "mock") {
     return {

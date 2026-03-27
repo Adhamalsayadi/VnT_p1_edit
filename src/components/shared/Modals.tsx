@@ -89,7 +89,7 @@ export const EditEnquiryModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Enquiry">
-        <form className="space-y-5" onSubmit={(e) => {
+        <form className="space-y-4 max-h-[70vh] overflow-y-auto px-1 pb-2" onSubmit={(e) => {
             e.preventDefault();
             const formData = new FormData(e.currentTarget);
             const data = Object.fromEntries(formData.entries());
@@ -104,6 +104,31 @@ export const EditEnquiryModal = ({
                 className="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#EAECF0] rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
               />
            </div>
+
+           <div className="grid grid-cols-2 gap-4">
+               <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-[#344054] uppercase tracking-wider">Category</label>
+                  <select 
+                    name="category"
+                    defaultValue={enquiry.category}
+                    className="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#EAECF0] rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm appearance-none"
+                  >
+                     <option value="products">Products</option>
+                     <option value="services">Services</option>
+                     <option value="rental">Rental</option>
+                     <option value="manpower">Man power</option>
+                  </select>
+               </div>
+               <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-[#344054] uppercase tracking-wider">Sub Category</label>
+                  <input 
+                    name="subCategory"
+                    defaultValue={enquiry.subCategory}
+                    className="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#EAECF0] rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
+                  />
+               </div>
+           </div>
+
            <div className="grid grid-cols-2 gap-4">
                <div className="space-y-1.5">
                   <label className="text-xs font-bold text-[#344054] uppercase tracking-wider">Quantity</label>
@@ -115,23 +140,74 @@ export const EditEnquiryModal = ({
                   />
                </div>
                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-[#344054] uppercase tracking-wider">Required Date</label>
+                  <input 
+                    name="requiredDate"
+                    type="date"
+                    defaultValue={enquiry.requiredDate}
+                    className="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#EAECF0] rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
+                  />
+               </div>
+           </div>
+
+           <div className="grid grid-cols-2 gap-4">
+               <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-[#344054] uppercase tracking-wider">Request Type</label>
+                  <input 
+                    name="requestType"
+                    defaultValue={enquiry.requestType}
+                    className="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#EAECF0] rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
+                  />
+               </div>
+               <div className="space-y-1.5">
                   <label className="text-xs font-bold text-[#344054] uppercase tracking-wider">Status</label>
                   <select 
-                    name="status"
-                    defaultValue={enquiry.status}
-                    className="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#EAECF0] rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm appearance-none"
+                    name="enquiryStatus"
+                    defaultValue={enquiry.enquiryStatus}
+                    className="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#EAECF0] rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm appearance-none text-capitalize"
                   >
-                     <option value="active">Active</option>
-                     <option value="pending">Pending</option>
-                     <option value="closed">Closed</option>
+                     <option value="Active">Active</option>
+                     <option value="Pending">Pending</option>
+                     <option value="Closed">Closed</option>
                   </select>
                </div>
            </div>
-           <div className="pt-4 flex gap-3">
+
+           <div className="space-y-1.5">
+              <label className="text-xs font-bold text-[#344054] uppercase tracking-wider">Purpose</label>
+              <textarea 
+                name="purpose"
+                defaultValue={enquiry.purpose}
+                rows={3}
+                className="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#EAECF0] rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm resize-none"
+              />
+           </div>
+
+           <div className="grid grid-cols-2 gap-4">
+               <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-[#344054] uppercase tracking-wider">Enquiry ETA</label>
+                  <input 
+                    name="enquiryEta"
+                    defaultValue={enquiry.enquiryEta}
+                    className="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#EAECF0] rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
+                  />
+               </div>
+               <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-[#344054] uppercase tracking-wider">Standard</label>
+                  <input 
+                    name="standard"
+                    defaultValue={enquiry.standard}
+                    className="w-full px-4 py-2.5 bg-[#F9FAFB] border border-[#EAECF0] rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm"
+                  />
+               </div>
+           </div>
+
+           <div className="pt-2 flex gap-3 sticky bottom-0 bg-white">
               <Button type="button" variant="ghost" className="flex-1" onClick={onClose}>Discard</Button>
               <Button type="submit" className="flex-1">Save Changes</Button>
            </div>
         </form>
+
     </Modal>
   );
 };

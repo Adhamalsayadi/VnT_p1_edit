@@ -19,11 +19,13 @@ import {
   useToggleEnquiryVisibility,
 } from "@/hooks/useEnquiries";
 import { Enquiry } from "@/types/enquiries";
+import { useModalFlow } from "@/hooks/useModalFlow";
 
 export default function SupplierEnquiriesPage() {
   const user = useAuthStore((state) => state.user);
   const { activeEnquiry, modalType, openModal, closeModal } =
     useEnquiryModalStore();
+  const { openEnquiry, renderModals } = useModalFlow();
 
   /* ---------- pagination state ---------- */
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,6 +68,9 @@ export default function SupplierEnquiriesPage() {
       case "Edit":
         openModal("edit", enquiry);
         break;
+      case "View":
+        openEnquiry(enquiry);
+        break;
       case "Hide":
         toggleVisibility.mutate(id);
         break;
@@ -77,25 +82,6 @@ export default function SupplierEnquiriesPage() {
   const confirmDelete = () => {
     if (activeEnquiry)
       deleteEnquiry.mutate(activeEnquiry.id, { onSuccess: closeModal });
-  };
-
-  const saveEdit = (data: {
-    title?: string;
-    quantity?: string;
-    status?: string;
-  }) => {
-    if (activeEnquiry)
-      updateEnquiry.mutate(
-        {
-          id: activeEnquiry.id,
-          payload: {
-            title: data.title,
-            quantity: data.quantity ? Number(data.quantity) : undefined,
-            enquiryStatus: data.status,
-          },
-        },
-        { onSuccess: closeModal }
-      );
   };
 
   const loading = isLoading;
@@ -183,14 +169,17 @@ export default function SupplierEnquiriesPage() {
 
                           {/* TITLE */}
                           <td className="px-4 py-5 text-sm font-semibold text-[#101828]">
-                            <div className="flex items-center gap-1 truncate">
+                            <button 
+                              onClick={() => openEnquiry(enq)}
+                              className="flex items-center gap-1 truncate hover:text-primary transition-colors text-left w-full"
+                            >
                               <span className="truncate">{enq.title}</span>
                               {enq.isHidden && (
                                 <span className="shrink-0 px-1 py-0.5 rounded bg-gray-200 text-[9px] font-bold text-gray-600 uppercase">
                                   Hidden
                                 </span>
                               )}
-                            </div>
+                            </button>
                           </td>
 
                           {/* CATEGORY */}
@@ -333,16 +322,24 @@ export default function SupplierEnquiriesPage() {
       <EditEnquiryModal
         isOpen={isEditModalOpen}
         onClose={closeModal}
-        enquiry={
-          activeEnquiry
-            ? {
-                ...activeEnquiry,
-                status: activeEnquiry.enquiryStatus.toLowerCase(),
-              }
-            : null
-        }
-        onSave={saveEdit}
+        enquiry={activeEnquiry}
+        onSave={(data) => {
+          if (activeEnquiry) {
+            updateEnquiry.mutate(
+              {
+                id: activeEnquiry.id,
+                payload: {
+                  ...data,
+                  quantity: data.quantity ? Number(data.quantity) : undefined,
+                },
+              },
+              { onSuccess: closeModal }
+            );
+          }
+        }}
       />
+
+      {renderModals()}
     </div>
   );
 }

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Sidebar from "../Sidebar/Sidebar";
 import Header from "../header";
-import { Eye, Edit3, RotateCw, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { Eye, Edit3, RotateCw, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, X, Phone, Mail, Building2 } from "lucide-react";
 import {
   ConfirmationModal,
   EditEnquiryModal,
@@ -19,8 +19,32 @@ import {
   useToggleEnquiryVisibility,
 } from "@/hooks/useEnquiries";
 import { Enquiry } from "@/types/enquiries";
+import { useModalFlow } from "@/hooks/useModalFlow";
+
+interface SupplierContact {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  company?: string;
+  anchorRect?: DOMRect;
+}
 
 export default function ClientEnquiriesPage() {
+  const [supplierContact, setSupplierContact] = useState<SupplierContact | null>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const { openEnquiry, renderModals } = useModalFlow();
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
+        setSupplierContact(null);
+      }
+    };
+    if (supplierContact) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [supplierContact]);
+
   const user = useAuthStore((state) => state.user);
   const { activeEnquiry, modalType, openModal, closeModal } =
     useEnquiryModalStore();
@@ -66,6 +90,9 @@ export default function ClientEnquiriesPage() {
       case "Edit":
         openModal("edit", enquiry);
         break;
+      case "View":
+        openEnquiry(enquiry);
+        break;
       case "Hide":
         toggleVisibility.mutate(id);
         break;
@@ -77,25 +104,6 @@ export default function ClientEnquiriesPage() {
   const confirmDelete = () => {
     if (activeEnquiry)
       deleteEnquiry.mutate(activeEnquiry.id, { onSuccess: closeModal });
-  };
-
-  const saveEdit = (data: {
-    title?: string;
-    quantity?: string;
-    status?: string;
-  }) => {
-    if (activeEnquiry)
-      updateEnquiry.mutate(
-        {
-          id: activeEnquiry.id,
-          payload: {
-            title: data.title,
-            quantity: data.quantity ? Number(data.quantity) : undefined,
-            enquiryStatus: data.status,
-          },
-        },
-        { onSuccess: closeModal }
-      );
   };
 
   const loading = isLoading;
@@ -188,14 +196,17 @@ export default function ClientEnquiriesPage() {
 
                           {/* TITLE */}
                           <td className="px-3 py-5 text-sm font-semibold text-[#101828]">
-                            <div className="flex items-center gap-1 truncate">
+                            <button 
+                              onClick={() => openEnquiry(enq)}
+                              className="flex items-center gap-1 truncate hover:text-primary transition-colors text-left w-full"
+                            >
                               <span className="truncate">{enq.title}</span>
                               {enq.isHidden && (
                                 <span className="shrink-0 px-1 py-0.5 rounded bg-gray-200 text-[9px] font-bold text-gray-600 uppercase">
                                   Hidden
                                 </span>
                               )}
-                            </div>
+                            </button>
                           </td>
 
                           {/* CATEGORY */}
@@ -241,15 +252,40 @@ export default function ClientEnquiriesPage() {
                             </span>
                           </td>
 
-                          {/* ACCEPTED PRICE */}
-                          <td className="px-3 py-5 text-sm text-[#667085]">
-                            {enq.acceptedPrice != null ? enq.acceptedPrice : "—"}
-                          </td>
+                           {/* ACCEPTED PRICE */}
+                           <td className="px-3 py-5">
+                             {enq.acceptedPrice != null ? (
+                               <span className="font-semibold text-[#027A48] text-sm">
+                                 ${Number(enq.acceptedPrice).toLocaleString()}
+                               </span>
+                             ) : (
+                               <span className="text-[#98A2B3] text-sm">—</span>
+                             )}
+                           </td>
 
-                          {/* SUPPLIER */}
-                          <td className="px-3 py-5 text-sm text-[#667085] truncate">
-                            {enq.sellerName || "—"}
-                          </td>
+                           {/* SUPPLIER — only shown when there's an accepted price */}
+                           <td className="px-3 py-5 text-sm truncate">
+                             {enq.acceptedPrice != null && enq.sellerName ? (
+                               <button
+                                 onClick={(e) => {
+                                   const rect = (e.target as HTMLElement).getBoundingClientRect();
+                                   setSupplierContact({
+                                     id: enq.sellerId,
+                                     name: enq.sellerName,
+                                     email: `${enq.sellerName.toLowerCase().replace(/\s+/g, '.')}}@supplier.com`,
+                                     phone: "+966 XX XXX XXXX",
+                                     company: enq.sellerName,
+                                     anchorRect: rect,
+                                   });
+                                 }}
+                                 className="text-primary font-semibold hover:underline underline-offset-2 text-left truncate max-w-full"
+                               >
+                                 {enq.sellerName}
+                               </button>
+                             ) : (
+                               <span className="text-[#98A2B3]">—</span>
+                             )}
+                           </td>
 
                           {/* ACTIONS */}
                           <td className="px-3 py-3">
@@ -362,16 +398,74 @@ export default function ClientEnquiriesPage() {
       <EditEnquiryModal
         isOpen={isEditModalOpen}
         onClose={closeModal}
-        enquiry={
-          activeEnquiry
-            ? {
-                ...activeEnquiry,
-                status: activeEnquiry.enquiryStatus.toLowerCase(),
-              }
-            : null
-        }
-        onSave={saveEdit}
+        enquiry={activeEnquiry}
+        onSave={(data) => {
+          if (activeEnquiry) {
+            updateEnquiry.mutate(
+              {
+                id: activeEnquiry.id,
+                payload: {
+                  ...data,
+                  quantity: data.quantity ? Number(data.quantity) : undefined,
+                },
+              },
+              { onSuccess: closeModal }
+            );
+          }
+        }}
       />
+
+      {/* Supplier contact popup */}
+      {supplierContact && (
+        <div
+          ref={popupRef}
+          className="fixed z-[200] bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.18)] border border-[#EAECF0] p-5 w-72 animate-in fade-in zoom-in duration-150"
+          style={{
+            top: Math.min((supplierContact.anchorRect?.bottom ?? 0) + 8, window.innerHeight - 220),
+            left: Math.min((supplierContact.anchorRect?.left ?? 0), window.innerWidth - 300),
+          }}
+        >
+          <button
+            onClick={() => setSupplierContact(null)}
+            className="absolute top-3 right-3 p-1 text-[#98A2B3] hover:text-[#344054] transition-colors"
+          >
+            <X size={16} />
+          </button>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
+              {supplierContact.name.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <p className="font-bold text-[#101828] text-sm">{supplierContact.name}</p>
+              <p className="text-xs text-[#667085]">Supplier</p>
+            </div>
+          </div>
+          <div className="space-y-2.5">
+            {supplierContact.company && (
+              <div className="flex items-center gap-2.5 text-sm text-[#475467]">
+                <Building2 size={14} className="text-[#98A2B3] shrink-0" />
+                <span className="truncate">{supplierContact.company}</span>
+              </div>
+            )}
+            {supplierContact.email && (
+              <div className="flex items-center gap-2.5 text-sm text-[#475467]">
+                <Mail size={14} className="text-[#98A2B3] shrink-0" />
+                <a href={`mailto:${supplierContact.email}`} className="truncate hover:text-primary">
+                  {supplierContact.email}
+                </a>
+              </div>
+            )}
+            {supplierContact.phone && (
+              <div className="flex items-center gap-2.5 text-sm text-[#475467]">
+                <Phone size={14} className="text-[#98A2B3] shrink-0" />
+                <span>{supplierContact.phone}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {renderModals()}
     </div>
   );
 }

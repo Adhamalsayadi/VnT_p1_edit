@@ -1,54 +1,83 @@
 "use client";
 
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import Sidebar from "../../client/Sidebar/Sidebar";
+import Header from "../../client/header";
+
+function PasswordField({ label, name }: { label: string; name: string }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div>
+      <label className="block text-sm font-semibold text-[#344054] mb-1.5">{label}</label>
+      <div className="relative">
+        <input
+          type={show ? "text" : "password"}
+          name={name}
+          placeholder="••••••••"
+          className="w-full px-4 py-3 bg-[#F9FAFB] border border-[#EAECF0] rounded-xl outline-none focus:ring-2 focus:ring-primary/20 text-sm pr-12 transition-all"
+          required
+        />
+        <button
+          type="button"
+          onClick={() => setShow(!show)}
+          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#98A2B3] hover:text-[#344054] transition-colors"
+          tabIndex={-1}
+        >
+          {show ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function MarketerResetPasswordPage() {
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSuccess(true);
+  };
+
   return (
-    <div className="p-5">
-      <div className="text-sm text-[#999] mb-[25px]">
-        <Link href="/marketer" className="hover:text-black transition-colors">
-          Dashboard
-        </Link>{" "}
-        &gt; <span className="text-[#333]">Reset password</span>
-      </div>
+    <div className="flex min-h-screen bg-[#F9FAFB]">
+      <Sidebar role="Marketer" />
+      <div className="flex-1 flex flex-col">
+        <Header role="Marketer" />
 
-      <h1 className="text-2xl font-bold mb-10 text-[#333]">Reset password</h1>
+        <main className="flex-1 p-6 md:p-10 overflow-auto">
+          <div className="max-w-lg mx-auto md:mx-0">
+            <div className="text-[#667085] text-sm font-medium mb-8">
+              <Link href="/marketer" className="hover:text-black transition-colors">Dashboard</Link>{" "}
+              &gt; <span className="text-[#98A2B3]">Security Settings</span>
+            </div>
 
-      <div className="bg-white rounded-xl border border-[#EBEEF5] p-10 max-w-[500px]">
-        <div className="mb-[25px]">
-          <label className="block text-sm text-[#333] font-semibold mb-2.5">
-            Current password
-          </label>
-          <input
-            type="password"
-            placeholder="********"
-            className="w-full p-3 border border-[#EBEEF5] rounded-lg bg-[#F9FAFB] outline-none focus:border-blue-500 transition-colors"
-          />
-        </div>
-        <div className="mb-[25px]">
-          <label className="block text-sm text-[#333] font-semibold mb-2.5">
-            New password
-          </label>
-          <input
-            type="password"
-            placeholder="********"
-            className="w-full p-3 border border-[#EBEEF5] rounded-lg bg-[#F9FAFB] outline-none focus:border-blue-500 transition-colors"
-          />
-        </div>
-        <div className="mb-[25px]">
-          <label className="block text-sm text-[#333] font-semibold mb-2.5">
-            Confirm password
-          </label>
-          <input
-            type="password"
-            placeholder="********"
-            className="w-full p-3 border border-[#EBEEF5] rounded-lg bg-[#F9FAFB] outline-none focus:border-blue-500 transition-colors"
-          />
-        </div>
+            <h1 className="text-2xl font-bold text-[#101828] mb-2">Security Settings</h1>
+            <p className="text-[#667085] text-sm mb-8">Update your password to keep your account secure.</p>
 
-        <button className="w-full bg-[#1A237E] text-white border-none p-[15px] rounded-lg font-bold cursor-pointer mt-2.5 hover:bg-[#121858] transition-colors">
-          UPDATE
-        </button>
+            {success ? (
+              <div className="bg-[#ECFDF3] border border-[#6CE9A6] rounded-2xl p-6 text-center shadow-sm">
+                <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke="#027A48" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </div>
+                <p className="font-bold text-[#027A48]">Password updated successfully!</p>
+                <p className="text-sm text-[#039855] mt-1">Your new password is now active.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-[#EAECF0] shadow-sm p-8 space-y-5">
+                <PasswordField label="Current password" name="currentPassword" />
+                <PasswordField label="New password" name="newPassword" />
+                <PasswordField label="Confirm new password" name="confirmPassword" />
+                <div className="pt-2">
+                  <button type="submit" className="w-full bg-primary hover:bg-primary/90 text-black font-bold py-3 rounded-xl transition-all hover:-translate-y-0.5 shadow-sm">
+                    Update Password
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );
